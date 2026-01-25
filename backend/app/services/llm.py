@@ -2,6 +2,7 @@ import os
 import requests
 import json
 from dotenv import load_dotenv
+from app.utils.text_formatter import format_fortune_markdown
 
 # Load environment variables
 load_dotenv()
@@ -43,7 +44,6 @@ class LLMService:
         """
 
         # Gemini REST API Endpoint
-        # Using gemini-flash-latest for better stability
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key={self.api_key}"
         
         headers = {
@@ -64,7 +64,6 @@ class LLMService:
         max_retries = 3
         for attempt in range(max_retries):
             try:
-                # Using synchronous requests inside async function
                 response = requests.post(url, headers=headers, json=payload, timeout=30)
                 
                 if response.status_code == 200:
@@ -74,11 +73,11 @@ class LLMService:
                     if not raw_text:
                         return "AI가 답변을 생성하지 못했습니다."
 
-                    return self._post_process(raw_text)
+                    return format_fortune_markdown(raw_text)
                 
                 elif response.status_code == 429:
                     print(f"Rate Limit Hit (429). Retrying in {2 ** attempt} seconds...")
-                    time.sleep(2 ** attempt) # Exponential backoff: 1s, 2s, 4s
+                    time.sleep(2 ** attempt)
                     continue
                 
                 else:
@@ -90,24 +89,4 @@ class LLMService:
                 return "죄송합니다. AI가 천기를 누설하다 잠시 멈췄습니다. (네트워크 오류)"
         
         return "죄송합니다. 사용자가 너무 많아 처리가 지연되고 있습니다. 잠시 후 다시 시도해주세요. (429)"
-    
-    def _post_process(self, text: str) -> str:
-        """
-        Force formatting to ensure proper markdown structure.
-        """
-        import re
-        
-        # 0. Clean up user-disliked terms
-        text = text.replace("(Action Item)", "").replace("(ActionItem)", "")
 
-        # 1. Ensure headers are H3
-        keywords = ["총운", "재물/직업운", "연애/대인관계", "건강운", "개운법", "총평"]
-        
-        for key in keywords:
-            pattern = re.compile(f"(?:^|\\n)+[:#*\\s]*({re.escape(key)}[(]?.*?[)]?)(?:\\s|[*:])*([^\\n]*)", re.MULTILINE)
-            text = pattern.sub(f"\n\n### \\1\n\n\\2", text)
-            
-        # 3. Clean up excessive newlines
-        text = re.sub(r'\n{4,}', '\n\n\n', text)
-        
-        return text.strip()

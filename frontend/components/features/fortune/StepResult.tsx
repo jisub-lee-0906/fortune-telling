@@ -8,20 +8,11 @@ import { ResultHeader } from "./result/ResultHeader";
 import { SajuPillars } from "./result/SajuPillars";
 import { ElementsChart } from "./result/ElementsChart";
 import { InterpretationCard } from "./result/InterpretationCard";
-
-interface ApiResult {
-  saju: { year: string; month: string; day: string; hour: string };
-  analysis: {
-    summary_for_llm: string;
-    day_master: { name: string; element: string };
-    elements: Record<string, number>;
-  };
-  interpretation: string;
-}
+import type { FortuneResult } from "@/types/fortune";
 
 interface StepResultProps {
   name: string;
-  result: ApiResult;
+  result: FortuneResult;
   onReset: () => void;
 }
 
