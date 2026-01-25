@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+/* Custom Reset & Base Styles */
+html, body {
+  height: 100%;
+  background-color: #F2F4F6; /* Fallback */
+  color: #191F28;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Hide Scrollbar but keep functionality */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.toss-safe-area {
+    padding-bottom: env(safe-area-inset-bottom);
+}
