@@ -1,7 +1,8 @@
 fastapi
 uvicorn
 korean-lunar-calendar
-ollama
 ephem
 pytz
-ollama
+requests
+python-dotenv
+google-generativeai

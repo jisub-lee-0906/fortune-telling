@@ -1,24 +1,10 @@
 from datetime import datetime, timedelta
 import ephem
-import pytz
 from korean_lunar_calendar import KoreanLunarCalendar
+from app.core.constants import GAN_HANJA, JI_HANJA, HANJA_TO_HANGUL, HANGUL_TO_HANJA
 
 class CalculatorService:
     def __init__(self):
-        self.GAN = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"]
-        self.JI = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"]
-        
-        self.HANJA_TO_HANGUL = {
-            "甲": "갑", "乙": "을", "丙": "병", "丁": "정", "戊": "무",
-            "己": "기", "庚": "경", "辛": "신", "壬": "임", "癸": "계",
-            "子": "자", "丑": "축", "寅": "인", "卯": "묘", "辰": "진", "巳": "사",
-            "午": "오", "未": "미", "申": "신", "酉": "유", "戌": "술", "亥": "해"
-        }
-        self.HANGUL_TO_HANJA = {v: k for k, v in self.HANJA_TO_HANGUL.items()}
-
-    def _get_solar_term_date(self, year, angle):
-        """Find the exact UTC datetime when Sun reaches specific longitude in a year."""
-        # Simplified for N100 performance: standard approximation
         pass
 
     def get_solar_longitude(self, year, month, day, hour, minute):
@@ -41,8 +27,8 @@ class CalculatorService:
         day_branch_kr = day_str[1]
         
         # Convert to Hanja for internal calculation
-        day_stem_hanja = self.HANGUL_TO_HANJA.get(day_stem_kr)
-        day_branch_hanja = self.HANGUL_TO_HANJA.get(day_branch_kr)
+        day_stem_hanja = HANGUL_TO_HANJA.get(day_stem_kr)
+        day_branch_hanja = HANGUL_TO_HANJA.get(day_branch_kr)
         day_pillar_hanja = day_stem_hanja + day_branch_hanja
         
         # 2. Year & Month Pillar Correction (Solar Term Logic)
@@ -65,15 +51,15 @@ class CalculatorService:
         # 0=In(Tiger), 1=Myo(Rabbit)...
         
         month_branch_idx = (month_idx_exact + 2) % 12 # 0->2(In), 1->3(Myo)
-        month_branch = self.JI[month_branch_idx]
+        month_branch = JI_HANJA[month_branch_idx]
         
         # Year Stem
         year_gan_idx = (saju_year - 4) % 10 
-        year_gan = self.GAN[year_gan_idx]
+        year_gan = GAN_HANJA[year_gan_idx]
         
         # Year Branch
         year_branch_idx = (saju_year - 4) % 12
-        year_branch = self.JI[year_branch_idx]
+        year_branch = JI_HANJA[year_branch_idx]
         year_pillar_hanja = year_gan + year_branch
         
         # Month Stem (Nyeon-Du-Beop)
@@ -97,31 +83,18 @@ class CalculatorService:
 
     def _h(self, hanja):
         """Helper to convert 2-char Hanja string to Hangul"""
-        return self.HANJA_TO_HANGUL[hanja[0]] + self.HANJA_TO_HANGUL[hanja[1]]
+        return HANJA_TO_HANGUL[hanja[0]] + HANJA_TO_HANGUL[hanja[1]]
 
     def _get_month_stem(self, year_stem, month_branch):
         # Nyeon-Du-Beop
-        # Year Gap/Gi -> In month is Byeong-In
-        # Year Eul/Gyeong -> In month is Mu-In
         start_map = {"甲": 2, "己": 2, "乙": 4, "庚": 4, "丙": 6, "辛": 6, "丁": 8, "壬": 8, "戊": 0, "癸": 0}
-        # In(Tiger) is base.
-        # Find offset of month_branch from In(Tiger) which is index 2
-        # JI = [Ja, Chuk, In, Myo...]
-        # In is index 2.
         
-        target_branch_idx = self.JI.index(month_branch)
-        # Offset from Tiger(2)
-        # In(2) -> 0 offset
-        # Myo(3) -> 1 offset
-        # ...
-        # Ja(0) -> 10 offset (Winter)
-        # Chuk(1) -> 11 offset
-        
+        target_branch_idx = JI_HANJA.index(month_branch)
         offset = (target_branch_idx - 2) % 12
         
         start_stem_idx = start_map[year_stem]
         final_stem_idx = (start_stem_idx + offset) % 10
-        return self.GAN[final_stem_idx]
+        return GAN_HANJA[final_stem_idx]
 
     def _get_hour_branch(self, hour, minute):
         total_mins = hour * 60 + minute
@@ -144,6 +117,6 @@ class CalculatorService:
             "丁": 6, "壬": 6, "戊": 8, "癸": 8
         }
         start_idx = start_stem_map.get(day_stem, 0)
-        try: branch_idx = self.JI.index(hour_branch)
+        try: branch_idx = JI_HANJA.index(hour_branch)
         except: return "?"
-        return self.GAN[(start_idx + branch_idx) % 10]
+        return GAN_HANJA[(start_idx + branch_idx) % 10]
