@@ -56,58 +56,113 @@ export function StepResult({ name, result, onReset }: StepResultProps) {
           </div>
 
           {/* Element Summary (Visual Breakdown) */}
-        <div className="bg-white rounded-[24px] p-6 mb-6 shadow-sm border border-gray-100">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="text-[16px] font-bold text-[#191F28]">오행 분석</span>
-            <span className="text-[13px] text-[#8B95A1] font-medium">나의 기운 분포</span>
-          </div>
-          
-          <div className="space-y-3">
-            {[
-              { key: "Wood", label: "목(나무)", color: "bg-green-500", bg: "bg-green-50" },
-              { key: "Fire", label: "화(불)", color: "bg-red-500", bg: "bg-red-50" },
-              { key: "Earth", label: "토(땅)", color: "bg-yellow-500", bg: "bg-yellow-50" },
-              { key: "Metal", label: "금(쇠)", color: "bg-gray-400", bg: "bg-gray-100" },
-              { key: "Water", label: "수(물)", color: "bg-blue-500", bg: "bg-blue-50" },
-            ].map((el) => {
-              const count = result.analysis.elements[el.key] || 0;
-              const max = 5; // Assumed max for bar width calc
-              const width = Math.min((count / max) * 100, 100);
-              
-              return (
-                <div key={el.key} className="flex items-center justify-between">
-                  <span className="text-[14px] font-medium text-[#4E5968] w-16">{el.label}</span>
-                  <div className="flex-1 mx-3 h-2 bg-gray-100 rounded-full overflow-hidden">
-                    <div 
-                        className={`h-full rounded-full ${el.color} transition-all duration-1000 ease-out`} 
-                        style={{ width: `${width}%` }} 
-                    />
+          <div className="bg-white rounded-[24px] p-6 mb-6 shadow-sm border border-gray-100">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-[16px] font-bold text-[#191F28]">오행 분석</span>
+              <span className="text-[13px] text-[#8B95A1] font-medium">나의 기운 분포</span>
+            </div>
+
+            <div className="space-y-3">
+              {[
+                { key: "Wood", label: "목(나무)", color: "bg-green-500", bg: "bg-green-50" },
+                { key: "Fire", label: "화(불)", color: "bg-red-500", bg: "bg-red-50" },
+                { key: "Earth", label: "토(땅)", color: "bg-yellow-500", bg: "bg-yellow-50" },
+                { key: "Metal", label: "금(쇠)", color: "bg-gray-400", bg: "bg-gray-100" },
+                { key: "Water", label: "수(물)", color: "bg-blue-500", bg: "bg-blue-50" },
+              ].map((el) => {
+                const count = result.analysis.elements[el.key] || 0;
+                const max = 5; // Assumed max for bar width calc
+                const width = Math.min((count / max) * 100, 100);
+
+                return (
+                  <div key={el.key} className="flex items-center justify-between">
+                    <span className="text-[14px] font-medium text-[#4E5968] w-16">{el.label}</span>
+                    <div className="flex-1 mx-3 h-2 bg-gray-100 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full rounded-full ${el.color} transition-all duration-1000 ease-out`}
+                        style={{ width: `${width}%` }}
+                      />
+                    </div>
+                    <span className={`text-[13px] font-bold px-2 py-0.5 rounded-[6px] ${el.bg} text-[#333D4B]`}>
+                      {count}개
+                    </span>
                   </div>
-                  <span className={`text-[13px] font-bold px-2 py-0.5 rounded-[6px] ${el.bg} text-[#333D4B]`}>
-                    {count}개
-                  </span>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
+
+            <div className="mt-5 pt-4 border-t border-gray-100">
+              <p className="text-[15px] text-[#333D4B] leading-[1.6]">
+                당신은 <span className="font-bold text-[#3182F6]">{result.analysis.day_master.name}</span> 일간입니다.
+              </p>
+            </div>
           </div>
-          
-          <div className="mt-5 pt-4 border-t border-gray-100">
-            <p className="text-[15px] text-[#333D4B] leading-[1.6]">
-               당신은 <span className="font-bold text-[#3182F6]">{result.analysis.day_master.name}</span> 일간입니다.
-            </p>
-          </div>
-        </div>
         </div>
 
         {/* Interpretation Card */}
         <div className="px-5">
           <div className="bg-white rounded-[24px] overflow-hidden p-6 shadow-sm">
-            <div className="prose prose-p:text-[#333D4B] prose-p:text-[16px] prose-p:leading-[1.8] prose-p:mb-4 
-                          prose-headings:text-[#191F28] prose-h3:text-[19px] prose-h3:font-bold prose-h3:text-[#3182F6] prose-h3:mt-8 prose-h3:mb-3 first:prose-h3:mt-0
-                          prose-strong:text-[#191F28] prose-strong:font-bold 
-                          prose-ul:list-disc prose-ul:pl-5 prose-li:mb-2 prose-li:text-[#4E5968] prose-li:marker:text-gray-300
-                          max-w-none font-normal tracking-tight">
-              <ReactMarkdown>{result.interpretation}</ReactMarkdown>
+            {/* Do not use single Markdown block. Parse and split sections for perfect control */}
+            <div className="flex flex-col gap-8">
+              {(() => {
+                // 1. Parsing Logic: Split by '### ' (headers)
+                // The backend guarantees clean headers via post-processing
+                const rawText = result.interpretation;
+                const sections = rawText.split(/###\s+/);
+
+                return sections.map((section, idx) => {
+                  const trimmed = section.trim();
+                  if (!trimmed) return null;
+
+                  // Extract Title vs Body
+                  // format: "Title\n\nBody..."
+                  const firstLineEnd = trimmed.indexOf('\n');
+                  let title = "";
+                  let body = "";
+
+                  if (firstLineEnd === -1) {
+                    // unexpected case: only title or only body? 
+                    // Assume it's intro text if idx === 0 and doesn't look like a header
+                    if (idx === 0) body = trimmed;
+                    else title = trimmed;
+                  } else {
+                    title = trimmed.slice(0, firstLineEnd).trim();
+                    body = trimmed.slice(firstLineEnd).trim();
+                  }
+
+                  // Special rendering for the first chunk if it lacks a recognizable title (Intro)
+                  if (idx === 0 && !["총운", "재물", "직업", "연애", "건강", "개운"].some(k => title.includes(k))) {
+                    return (
+                      <div key="intro" className="text-[16px] text-[#333D4B] leading-[1.8] mb-4">
+                        <ReactMarkdown>{trimmed}</ReactMarkdown>
+                      </div>
+                    );
+                  }
+
+                  // Render Structured Card
+                  return (
+                    <div key={idx} className="flex flex-col animate-in fade-in slide-in-from-bottom-2 duration-700" style={{ animationDelay: `${idx * 100}ms` }}>
+                      {/* Explicit Title Styling */}
+                      <h3 className="text-[22px] font-bold text-[#3182F6] mb-3 flex items-center">
+                        <span className="w-1.5 h-6 bg-[#3182F6] rounded-full mr-3 inline-block"></span>
+                        {title}
+                      </h3>
+
+                      {/* Body Content with Relaxed Spacing */}
+                      <div className="text-[16px] text-[#4E5968] leading-[1.9] tracking-tight bg-[#F9FAFB] p-5 rounded-[16px]">
+                        <ReactMarkdown components={{
+                          strong: ({ node, ...props }) => <span className="font-bold text-[#191F28] bg-[#E8F3FF] px-1 rounded" {...props} />,
+                          p: ({ node, ...props }) => <p className="mb-3 last:mb-0" {...props} />,
+                          ul: ({ node, ...props }) => <ul className="list-disc pl-5 space-y-2" {...props} />,
+                          li: ({ node, ...props }) => <li className="pl-1" {...props} />
+                        }}>
+                          {body}
+                        </ReactMarkdown>
+                      </div>
+                    </div>
+                  );
+                });
+              })()}
             </div>
             <p className="text-center text-[#B0B8C1] text-xs mt-8 mb-2">운세 결과는 재미로만 봐주세요 :)</p>
           </div>
