@@ -52,6 +52,11 @@ class AnalysisService:
         
         [일간(Day Master)]
         당신은 '{day_master_info.get('name')}({self.GAN_INFO.get(day_stem, {}).get('element_ko', day_master_info.get('element'))})' 일간입니다.
+        
+        [2026년 세운(Yearly Pillar) 안내]
+        대상 세운: 2026년 병오년(붉은 말의 해)
+        세운 천간: 병(화 기운)
+        세운 지지: 오(화 기운)
         """
         
         return {

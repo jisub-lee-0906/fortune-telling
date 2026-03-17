@@ -12,17 +12,7 @@ import { StepResult } from "@/components/features/fortune/StepResult";
 
 // --- Type Definitions ---
 type Step = 'intro' | 'name' | 'birth' | 'loading' | 'result';
-
-interface ApiResult {
-  saju: { year: string; month: string; day: string; hour: string };
-  analysis: {
-    summary_for_llm: string;
-    day_master: { name: string; element: string };
-    elements: Record<string, number>;
-  };
-  interpretation: string;
-}
-
+import type { FortuneResult } from "@/types/fortune";
 export default function Home() {
   const [step, setStep] = useState<Step>('intro');
   const [direction, setDirection] = useState(1); 
@@ -36,7 +26,7 @@ export default function Home() {
     gender: "male"
   });
 
-  const [result, setResult] = useState<ApiResult | null>(null);
+  const [result, setResult] = useState<FortuneResult | null>(null);
 
   // --- Handlers ---
   const nextStep = (next: Step) => {
@@ -58,7 +48,9 @@ export default function Home() {
     };
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/interpret", {
+      // @ts-ignore - Next.js injected
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+      const res = await fetch(`${API_URL}/interpret`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)

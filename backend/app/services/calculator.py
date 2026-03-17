@@ -15,9 +15,15 @@ class CalculatorService:
         return  float(ecl.lon) * 180.0 / ephem.pi # Convert to degrees
 
     def get_saju(self, year, month, day, hour, minute):
+        # 0. Handle Night Rat Hour (야자시)
+        # If time is 23:30 or later, the Day Pillar should be calculated based on the next day (+1 day)
+        base_date = datetime(year, month, day)
+        if hour == 23 and minute >= 30:
+            base_date += timedelta(days=1)
+            
         # 1. Day Pillar (Base Reference)
         cal = KoreanLunarCalendar()
-        cal.setSolarDate(year, month, day)
+        cal.setSolarDate(base_date.year, base_date.month, base_date.day)
         # Returns like "계묘년 을축월 기해일"
         gapja = cal.getGapJaString().split()
         
