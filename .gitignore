@@ -1,9 +1,9 @@
 # Python
 __pycache__/
 *.pyc
+venv/
 .venv/
 .env
-venv/
 
 # Node.js
 node_modules/
@@ -11,6 +11,15 @@ npm-debug.log
 .next/
 dist/
 build/
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+*.log
+dev_server.log
+dev_server2.log
 
 # System
 .DS_Store
@@ -19,3 +28,5 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
+*.swp
+*.swo

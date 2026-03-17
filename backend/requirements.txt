@@ -1,8 +1,9 @@
 fastapi
 uvicorn
-korean-lunar-calendar
-ephem
-pytz
 requests
 python-dotenv
-google-generativeai
+korean-lunar-calendar
+ephem
+pydantic
+gunicorn
+uvicorn[standard]

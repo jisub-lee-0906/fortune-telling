@@ -69,14 +69,17 @@ class LLMService:
             try:
                 # Run the blocking requests.post in a separate thread
                 response = await asyncio.to_thread(
-                    requests.post, url, headers=headers, json=payload, timeout=15
+                    requests.post, url, headers=headers, json=payload, timeout=60
                 )
                 
                 if response.status_code == 200:
                     result = response.json()
+                    # Log successful response for debugging
+                    print(f"Gemini API Success: Response received.")
                     raw_text = result.get('candidates', [{}])[0].get('content', {}).get('parts', [{}])[0].get('text', '')
                     
                     if not raw_text:
+                        print(f"Gemini API Error: Empty text in response. Raw result: {result}")
                         return "AI가 답변을 생성하지 못했습니다."
 
                     return format_fortune_markdown(raw_text)
@@ -91,9 +94,9 @@ class LLMService:
                     return f"죄송합니다. 서버 연결에 문제가 발생했습니다. (오류 코드: {response.status_code})"
 
             except Exception as e:
-                print(f"LLM Error on attempt {attempt}: {e}")
+                print(f"LLM Error on attempt {attempt}: {type(e).__name__} - {e}")
                 if attempt < max_retries - 1:
-                    await asyncio.sleep(1)
+                    await asyncio.sleep(2)
                     continue
                 return "죄송합니다. AI가 천기를 누설하다 잠시 멈췄습니다. (네트워크/타임아웃 오류)"
         
