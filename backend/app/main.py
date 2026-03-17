@@ -11,13 +11,15 @@ import os
 frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
 origins = [
     frontend_url,
+    *getattr(settings, "FRONTEND_ORIGINS", ["http://localhost:3000"]),
     "http://127.0.0.1:3000",
     "http://localhost:3000"
 ]
+ALLOWED_ORIGINS = list(dict.fromkeys([origin for origin in origins if origin]))
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

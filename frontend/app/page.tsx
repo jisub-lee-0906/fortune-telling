@@ -48,8 +48,9 @@ export default function Home() {
     };
 
     try {
-      // @ts-ignore - Next.js injected
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+      const API_URL = process.env.NEXT_PUBLIC_API_URL
+        || process.env.NEXT_PUBLIC_INTERNAL_API_URL
+        || "http://127.0.0.1:8000";
       const res = await fetch(`${API_URL}/interpret`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

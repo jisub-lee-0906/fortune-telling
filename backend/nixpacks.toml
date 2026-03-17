@@ -1,0 +1,11 @@
+[phases.setup]
+nixPkgs = ["python311", "python311Packages.pip", "python311Packages.setuptools"]
+
+[phases.install]
+cmds = ["pip install --no-cache-dir -r requirements.txt"]
+
+[phases.build]
+cmds = []
+
+[start]
+cmd = "gunicorn -c gunicorn_conf.py app.main:app --bind 0.0.0.0:${PORT:-8000}"
