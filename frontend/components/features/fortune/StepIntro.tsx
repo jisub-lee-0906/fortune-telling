@@ -24,7 +24,6 @@ export function StepIntro({ onNext, variants }: StepIntroProps) {
       <div className="absolute bottom-[20%] left-[-10%] w-[250px] h-[250px] bg-purple-400/10 blur-[80px] rounded-full pointer-events-none" />
 
       <PageHeader className="relative z-10 mt-6" subTitle="2026년, 당신의 운명을 읽어보세요">
-        <span className="text-4xl font-light block mb-2 opacity-90">Anti-Gravity</span>
         운세 AI
       </PageHeader>
 

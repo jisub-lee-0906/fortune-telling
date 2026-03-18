@@ -7,7 +7,7 @@ def _parse_csv(value: str) -> List[str]:
 
 
 class Settings:
-    PROJECT_NAME: str = "Anti-Gravity Fortune Telling API"
+    PROJECT_NAME: str = "Fortune Telling API"
     VERSION: str = "1.0.0"
 
     # CORS

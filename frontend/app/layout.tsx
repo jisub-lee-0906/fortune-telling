@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "운세 AI - Anti-Gravity",
+  title: "운세 AI",
   description: "High-Precision On-Premise Fortune Telling",
 };
 
