@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { BottomBar } from "@/components/ui/BottomBar";
 import { Button } from "@/components/ui/Button";
@@ -13,7 +13,7 @@ interface StepBirthProps {
   };
   onChange: (field: string, val: string) => void;
   onNext: () => void;
-  variants: any;
+  variants: Variants;
 }
 
 export function StepBirth({ formData, onChange, onNext, variants }: StepBirthProps) {

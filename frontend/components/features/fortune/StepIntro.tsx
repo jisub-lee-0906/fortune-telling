@@ -1,11 +1,11 @@
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { BottomBar } from "@/components/ui/BottomBar";
 import { Button } from "@/components/ui/Button";
 
 interface StepIntroProps {
   onNext: () => void;
-  variants: any;
+  variants: Variants;
 }
 
 export function StepIntro({ onNext, variants }: StepIntroProps) {

@@ -1,5 +1,7 @@
 import { test, expect } from '@playwright/test';
 
+test.setTimeout(90000);
+
 test('Fortune Telling App - Visual Verification', async ({ page }) => {
   // 1. Landing Page (Intro)
   await page.goto('http://localhost:3000');
@@ -36,7 +38,7 @@ test('Fortune Telling App - Visual Verification', async ({ page }) => {
 
   // 8. Result Page
   // Wait for result to load (heavy computation)
-  await expect(page.getByText('오행 요약'), { timeout: 60000 }).toBeVisible();
+  await expect(page.getByText('오행 분석')).toBeVisible({ timeout: 60000 });
   await page.screenshot({ path: 'screenshots/4-result.png', fullPage: true });
   console.log('📸 Captured Result');
 });

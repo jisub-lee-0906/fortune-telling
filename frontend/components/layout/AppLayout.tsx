@@ -1,12 +1,6 @@
 import { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-interface TossLayoutProps {
-  children: ReactNode;
-  className?: string;
-  bgWhite?: boolean;
-}
-
 export function AppLayout({ children, className, bgWhite = false }: { children: ReactNode; className?: string; bgWhite?: boolean }) {
   return (
     <div className="min-h-[100dvh] bg-[#F2F4F6] flex justify-center items-center">

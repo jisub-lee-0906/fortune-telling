@@ -1,4 +1,5 @@
 import ReactMarkdown from "react-markdown";
+import type { Components } from "react-markdown";
 
 interface InterpretationCardProps {
     interpretation: string;
@@ -8,6 +9,12 @@ export function InterpretationCard({ interpretation }: InterpretationCardProps) 
     // Parsing Logic: Split by '### ' (headers)
     // The backend guarantees clean headers via post-processing
     const sections = interpretation.split(/###\s+/);
+    const markdownComponents: Components = {
+        strong: (props) => <span className="font-bold text-[#191F28] bg-[#E8F3FF] px-1 rounded" {...props} />,
+        p: (props) => <p className="mb-3 last:mb-0" {...props} />,
+        ul: (props) => <ul className="list-disc pl-5 space-y-2" {...props} />,
+        li: (props) => <li className="pl-1" {...props} />,
+    };
 
     return (
         <div className="bg-white rounded-[24px] overflow-hidden p-6 shadow-sm">
@@ -48,12 +55,7 @@ export function InterpretationCard({ interpretation }: InterpretationCardProps) 
                             </h3>
 
                             <div className="text-[16px] text-[#4E5968] leading-[1.9] tracking-tight bg-[#F9FAFB] p-5 rounded-[16px]">
-                                <ReactMarkdown components={{
-                                    strong: ({ node, ...props }: any) => <span className="font-bold text-[#191F28] bg-[#E8F3FF] px-1 rounded" {...props} />,
-                                    p: ({ node, ...props }: any) => <p className="mb-3 last:mb-0" {...props} />,
-                                    ul: ({ node, ...props }: any) => <ul className="list-disc pl-5 space-y-2" {...props} />,
-                                    li: ({ node, ...props }: any) => <li className="pl-1" {...props} />
-                                }}>
+                                <ReactMarkdown components={markdownComponents}>
                                     {body}
                                 </ReactMarkdown>
                             </div>

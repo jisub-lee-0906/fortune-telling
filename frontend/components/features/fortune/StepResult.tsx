@@ -10,6 +10,10 @@ import { ElementsChart } from "./result/ElementsChart";
 import { InterpretationCard } from "./result/InterpretationCard";
 import type { FortuneResult } from "@/types/fortune";
 
+type ShareableNavigator = Navigator & {
+  share?: (data: { title?: string; text?: string; url?: string }) => Promise<void>;
+};
+
 interface StepResultProps {
   name: string;
   result: FortuneResult;
@@ -46,7 +50,7 @@ export function StepResult({ name, result, onReset }: StepResultProps) {
   };
 
   const handleShare = async () => {
-    const nav = navigator as any;
+    const nav = navigator as ShareableNavigator;
     if (nav.share) {
       try {
         await nav.share({
