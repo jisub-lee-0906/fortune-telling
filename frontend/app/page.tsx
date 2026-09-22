@@ -48,10 +48,7 @@ export default function Home() {
     };
 
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL
-        || process.env.NEXT_PUBLIC_INTERNAL_API_URL
-        || "http://127.0.0.1:8000";
-      const res = await fetch(`${API_URL}/interpret`, {
+      const res = await fetch("/api/interpret", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)

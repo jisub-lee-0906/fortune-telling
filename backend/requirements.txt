@@ -1,9 +1,8 @@
-fastapi
-uvicorn
-requests
-python-dotenv
-korean-lunar-calendar
-ephem
-pydantic>=2
-gunicorn
-uvicorn[standard]
+fastapi==0.141.1
+uvicorn[standard]==0.53.0
+requests==2.34.2
+python-dotenv==1.2.3
+korean-lunar-calendar==0.4.0
+ephem==4.2.1
+pydantic==2.13.5
+gunicorn==26.2.0

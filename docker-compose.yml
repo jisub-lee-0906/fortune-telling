@@ -8,8 +8,12 @@ services:
       - HOST=0.0.0.0
       - PORT=8000
       - FRONTEND_URLS=${FRONTEND_URLS:-http://localhost:3000}
+      - INTERPRET_ENABLED=${INTERPRET_ENABLED:-false}
+      - INTERPRET_SERVER_TOKEN=${INTERPRET_SERVER_TOKEN:-}
+      - INTERPRET_REQUESTS_PER_MINUTE=${INTERPRET_REQUESTS_PER_MINUTE:-10}
+      - INTERPRET_MAX_CONCURRENCY=${INTERPRET_MAX_CONCURRENCY:-2}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
     restart: unless-stopped
-    # Backend should stay internal. Coolify/other reverse proxy should route to 8000 container port.
     expose:
       - "8000"
 
@@ -22,8 +26,8 @@ services:
       - backend
     environment:
       - PORT=3000
-      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://backend:8000}
+      - BACKEND_API_URL=${BACKEND_API_URL:-http://backend:8000}
+      - INTERPRET_SERVER_TOKEN=${INTERPRET_SERVER_TOKEN:-}
     restart: unless-stopped
-    # Expose only frontend externally (change FRONTEND_HOST_PORT if needed)
     ports:
       - "${FRONTEND_HOST_PORT:-3001}:3000"
