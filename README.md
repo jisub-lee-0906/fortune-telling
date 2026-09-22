@@ -21,7 +21,7 @@ $env:NEXT_PUBLIC_API_URL = "http://127.0.0.1:8000"
 npm run dev
 ```
 
-Copy `.env.example` to `.env` and set `GEMINI_API_KEY` to enable `/interpret`. The calculator endpoint does not require that key.
+Copy `.env.example` to `.env`. `/interpret` is fail-closed: enabling it requires `INTERPRET_ENABLED=true`, `GEMINI_API_KEY`, and the server-only `INTERPRET_SERVER_TOKEN`. The browser uses the same-origin Next.js `/api/interpret` route; configure `BACKEND_API_URL` and `INTERPRET_SERVER_TOKEN` for that server route, never as `NEXT_PUBLIC_*` secrets. The calculator endpoint does not require Gemini.
 
 ## Verification
 
@@ -40,3 +40,11 @@ node .\node_modules\next\dist\bin\next build
 ```
 
 The API validates calendar dates and time ranges before invoking the calculator, so malformed requests return a validation response instead of an internal server error.
+
+## Verification and maturity
+
+The listed checks validate source behavior and the frontend production build. They do not prove a deployed service: no paid Gemini request, production database, external proxy/HTTPS configuration, or end-to-end interpretation with a live model was executed in this readiness work. Source publication is not a service deployment.
+
+## Automated verification (2026-09-23)
+
+No GitHub Actions workflows or runs are configured/recorded. The local test/build records above are not a remote CI pass.
