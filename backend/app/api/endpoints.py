@@ -21,8 +21,8 @@ def calculate_saju(
         result = calculator.get_saju(req.year, req.month, req.day, req.hour, req.minute)
         analysis = analyzer.analyze(result)
         return {"status": "success", "data": {**result, "analysis": analysis}}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    except Exception:
+        raise HTTPException(status_code=500, detail="Unable to calculate fortune data")
 
 @router.post("/interpret")
 async def interpret_saju(
@@ -49,5 +49,5 @@ async def interpret_saju(
                 "interpretation": interpretation
             }
         }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    except Exception:
+        raise HTTPException(status_code=500, detail="Unable to interpret fortune data")

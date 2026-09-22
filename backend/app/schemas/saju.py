@@ -1,14 +1,24 @@
-from pydantic import BaseModel
-from typing import Dict, Any, Optional
+from datetime import date
+from typing import Any, Dict
+
+from pydantic import BaseModel, Field, model_validator
+
 
 # --- Request Models ---
 class SajuRequest(BaseModel):
-    year: int
-    month: int
-    day: int
-    hour: int
-    minute: int = 0
+    year: int = Field(ge=1, le=9999)
+    month: int = Field(ge=1, le=12)
+    day: int = Field(ge=1, le=31)
+    hour: int = Field(ge=0, le=23)
+    minute: int = Field(default=0, ge=0, le=59)
     gender: str = "male"
+
+    @model_validator(mode="after")
+    def has_valid_calendar_date(self) -> "SajuRequest":
+        # Reject invalid calendar dates at the API boundary instead of letting the
+        # calculator fail later and turn a client error into a 500 response.
+        date(self.year, self.month, self.day)
+        return self
 
 # --- Response Models ---
 class SajuResponse(BaseModel):

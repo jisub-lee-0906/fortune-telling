@@ -4,6 +4,6 @@ requests
 python-dotenv
 korean-lunar-calendar
 ephem
-pydantic
+pydantic>=2
 gunicorn
 uvicorn[standard]
